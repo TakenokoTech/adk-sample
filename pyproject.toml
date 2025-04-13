@@ -1,0 +1,28 @@
+[project]
+name = "adk-sample"
+version = "0.1.0"
+description = ""
+authors = [{ name = "takenaka", email = "takenoko.tech@gmail.com" }]
+readme = "README.md"
+requires-python = "<4.0,>=3.9"
+dependencies = [
+    "google-adk (>=0.1.0,<0.2.0)",
+    "litellm (>=1.66.0,<2.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [
+    { include = "multi_tool_agent/*.py" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.14.1"
+
+[tool.taskipy.tasks]
+start = "adk web"
