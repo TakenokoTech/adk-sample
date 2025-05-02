@@ -26,3 +26,4 @@ taskipy = "^1.14.1"
 
 [tool.taskipy.tasks]
 start = "adk web"
+enginear_agent = "adk run enginear_agent"
