@@ -18,7 +18,7 @@ sequential_plan_agent = SequentialAgent(
         generate_plan_agent,
         LoopAgent(
             name="loop_plan_agent",
-            max_iterations=1,
+            max_iterations=2,
             sub_agents=[
                 evaluate_plan_agent,
                 update_plan_agent,
@@ -26,7 +26,7 @@ sequential_plan_agent = SequentialAgent(
         ),
         LoopAgent(
             name="loop_task_agent",
-            max_iterations=1,
+            max_iterations=2,
             sub_agents=[
                 evaluate_task_agent,
                 update_task_agent,
