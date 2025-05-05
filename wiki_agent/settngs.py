@@ -114,8 +114,8 @@ class Settings:
         ```
     """
     evaluate_instruction = """
-        [generate_markdown_agent]または[update_markdown_agent]の出力を受け取り、以下のタスクに取り組んでください。
         あなたはこれまでの調査結果を知らない初学者の立場で評価してください。
+        [generate_markdown_agent]または[update_markdown_agent]の出力を受け取り、以下のタスクに取り組んでください。
         JSON形式で出力してください。
     
         [タスク]
