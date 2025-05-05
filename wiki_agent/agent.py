@@ -1,7 +1,8 @@
 from google.adk import Agent
-from google.adk.agents import LoopAgent, SequentialAgent
+from google.adk.agents import SequentialAgent, LoopAgent
 
 from wiki_agent.settngs import Settings
+from wiki_agent.tools.check_mermaid import check_mermaid_format
 from wiki_agent.tools.fetch_code import fetch_source_code, fetch_file_tree
 
 fetch_file_agent = Agent(
@@ -34,16 +35,24 @@ check_agent = Agent(
     output_key="check",
 )
 
-output_markdown_agent = Agent(
-    name="output_markdown_agent",
+generate_markdown_agent = Agent(
+    name="generate_markdown_agent",
     model=Settings.model,
     instruction=Settings.markdown_instruction,
 )
 
-output_mermaid_agent = Agent(
-    name="output_mermaid_agent",
+evaluate_markdown_agent = Agent(
+    name="evaluate_markdown_agent",
     model=Settings.model,
-    instruction=Settings.mermaid_instruction,
+    instruction=Settings.evaluate_instruction,
+    output_key="evaluate",
+    tools=[check_mermaid_format],
+)
+
+update_markdown_agent = Agent(
+    name="update_markdown_agent",
+    model=Settings.model,
+    instruction=Settings.markdown_instruction,
 )
 
 root_agent = SequentialAgent(
@@ -54,10 +63,14 @@ root_agent = SequentialAgent(
         plan_agent,
         LoopAgent(
             name=Settings.name,
-            max_iterations=3,
+            max_iterations=2,
             sub_agents=[fetch_source_agent, check_agent],
         ),
-        output_markdown_agent,
-        output_mermaid_agent,
+        generate_markdown_agent,
+        LoopAgent(
+            name=Settings.name,
+            max_iterations=1,
+            sub_agents=[evaluate_markdown_agent, update_markdown_agent],
+        ),
     ]
 )

@@ -10,5 +10,5 @@ class PlanOutput(BaseModel):
 
 
 class CheckOutput(BaseModel):
-    docs: str
+    markdown: str
     next_action: str
