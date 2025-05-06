@@ -76,10 +76,14 @@ def fetch_source_code(file_or_dir_path: str, offset: int = 0, limit: int = 10_00
         if not target_path.is_file():
             result.note = "not a file"
         else:
-            target_code = open(target_path, "r", encoding="utf-8").read()[offset:offset + limit]
-            result.code = target_code
-            result.start = offset
-            result.end = offset + len(target_code)
+            try:
+                file = open(target_path, "r", encoding="utf-8")
+                target_code = file.read()[offset:offset + limit]
+                result.code = target_code
+                result.start = offset
+                result.end = offset + len(target_code)
+            except Exception as e:
+                result.note = "load error"
     else:
         result.note = "not found"
     return FetchCode(result=result)

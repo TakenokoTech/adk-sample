@@ -1,9 +1,10 @@
 from google.adk import Agent
-from google.adk.agents import SequentialAgent, LoopAgent
+from google.adk.agents import SequentialAgent, LoopAgent, ParallelAgent
 
 from wiki_agent.settngs import Settings
 from wiki_agent.tools.check_mermaid import check_mermaid_format
 from wiki_agent.tools.fetch_code import fetch_source_code, fetch_file_tree
+from wiki_agent.tools.rag import search_source_code
 
 fetch_file_agent = Agent(
     name="fetch_file_agent",
@@ -26,6 +27,14 @@ fetch_source_agent = Agent(
     instruction=Settings.source_instruction,
     tools=[fetch_source_code],
     output_key="source",
+)
+
+search_source_agent = Agent(
+    name="search_source_agent",
+    model=Settings.model,
+    instruction=Settings.source_instruction,
+    tools=[search_source_code],
+    output_key="search",
 )
 
 check_agent = Agent(
@@ -64,7 +73,13 @@ root_agent = SequentialAgent(
         LoopAgent(
             name=Settings.name,
             max_iterations=2,
-            sub_agents=[fetch_source_agent, check_agent],
+            sub_agents=[
+                ParallelAgent(
+                    name=Settings.name,
+                    sub_agents=[fetch_source_agent, search_source_agent]
+                ),
+                check_agent,
+            ],
         ),
         generate_markdown_agent,
         LoopAgent(

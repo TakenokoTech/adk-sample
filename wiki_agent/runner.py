@@ -1,4 +1,5 @@
 import asyncio
+import json
 import re
 
 from google.adk import Runner
@@ -44,8 +45,13 @@ async def main(text: str):
                     f.write(re.sub("^```markdown\n", "", event.content.parts[0].text))
             if event.content and event.content.parts and event.content.parts[0].text:
                 with open("output/history.md", "a", encoding="utf-8") as f:
-                    f.write(f"## {event.author}\n\n")
+                    f.write(f"## {event.author} [response]\n\n")
                     f.write(event.content.parts[0].text)
+                    f.write("\n\n")
+            if event.content and event.content.parts and event.content.parts[0].function_call:
+                with open("output/history.md", "a", encoding="utf-8") as f:
+                    f.write(f"## {event.author} [function_call]\n\n")
+                    f.write(f"args = {json.dumps(event.content.parts[0].function_call.args)}")
                     f.write("\n\n")
         except Exception as e:
             print(f"Error processing event: {e}")
